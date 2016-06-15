@@ -1,0 +1,7 @@
+Имеются приостановленные тендеры:<br>
+<% @tenders.each do |tender| %>
+  <ul>
+    <li>№ <%= tender.id %> <%= tender.name %> Менеджер: <%= tender.manager.name %></li>
+  </ul>
+<% end %>
+Пожалуйста зайдите на сайт для выбора победителей.

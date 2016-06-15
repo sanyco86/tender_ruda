@@ -1,0 +1,10 @@
+<tr>
+  <td><%= link_to manager.name, admin_manager_path(manager) %></td>
+  <td><%= manager.email %></td>
+  <td>
+    <% if can? :manage, @manager %>
+        <%= link_to 'Изменить', edit_admin_manager_path(manager), class: 'btn btn-warning btn-xs' %>
+        <%= link_to 'Удалить', admin_manager_path(manager), class: 'btn btn-danger btn-xs', method: :delete, data: { confirm: 'Вы уверены?' } %>
+    <% end %>
+  </td>
+</tr>

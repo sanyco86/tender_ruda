@@ -1,0 +1,10 @@
+<% if target.errors.any? %>
+    <div id="errorExplanation">
+      <h4>Пожалуйста исправьте следующие ошибки:</h4>
+      <ul>
+        <% target.errors.full_messages.each do |msg| %>
+            <li class="text-danger"><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+<% end %>

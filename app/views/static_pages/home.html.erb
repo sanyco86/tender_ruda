@@ -1,0 +1,12 @@
+<% provide(:title, 'Текущие тендерные закупки') %>
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <%= will_paginate @tenders %>
+        <%= render 'index' %>
+        <%= will_paginate @tenders %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+Добрый день!<br>
+Благодарим Вас за участие в тендере <strong>"<%= @tender.name %>"</strong>.<br>
+<br>
+<% winners = @tender.items.where(winner_id: @user.user_items.pluck(:id)) %>
+<% if winners.count == 0 %>
+    К сожалению, Ваша компания не была выбрана в качестве победителя, <br>
+    так как предложенные Вами условия оказались не достаточно привлекательными по сравнению с предложениями других поставщиков. <br>
+    Надеемся на сотрудничество в следующих тендерах.<br>
+<% else %>
+    Ваша компания была выбрана в качестве победителя тендера по следующим позициям:<br>
+    <% winners.each do |item| %>
+        <ul>
+          <li><%= item.name %>(<%= item.quantity %> <%= item.measure_unit %>) - цена за ед. <%= item.winner_user_item.price %> грн., срок поставки <%= item.winner_user_item.delivery %> д.</li>
+        </ul>
+    <% end %>
+    <br>
+    Просим Вас выставить счет и выслать его на данный электронный адрес <a href="mailto:tenders@tis-ruda.com">tenders@tis-ruda.com</a> <br>
+<% end %>
+<br>
+Ниже Вы можете видеть с какими результатами был завершен тендер:<br>
+<% @tender.items.each do |item| %>
+    <ul>
+      <li>
+        <%= item.name %>(<%= item.quantity %> <%= item.measure_unit %>) -
+        <% if item.winner_user_item.nil? %>
+            конкурс на данную позицию отменен.<br>
+        <% else %>
+            цена за ед. <%= item.winner_user_item.price %> грн., срок поставки <%= item.winner_user_item.delivery %> рабочих дней.
+        <% end %>
+      </li>
+    </ul>
+<% end %>
+<br>
+<%= render 'mailers/sign' %>

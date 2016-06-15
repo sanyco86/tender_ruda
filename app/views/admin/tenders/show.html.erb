@@ -1,0 +1,239 @@
+<p>
+  <%= link_to image_tag('excel.png', :alt => 'Экспорт в Excel'), admin_tender_path(format: 'xlsx') %>
+</p>
+<h2 class="sub-header">Тендер №<%= @tender.id %> <%= @tender.name %> <%= @tender.etap == 2 ? '(II Тур.)' : '' %></h2>
+<p>
+  Категория товаров: <%= formatted_categories(@tender.categories) %>
+</p>
+
+<div class="row">
+  <div class="col-md-5 col-lg-4">
+    <i class="glyphicon glyphicon-calendar"></i> Срок: <span class="label label-primary"><%= @tender.data_start.strftime('%d-%m-%Y %H:%M') %> — <%= @tender.data_end.strftime('%d-%m-%Y %H:%M') %></span>
+  </div>
+  <div class="col-md-4 col-lg-6">
+    <i class="glyphicon glyphicon-dashboard"></i> <% if @tender.status_id == Tender::OPENED %>До окончания <% else %>Окончен <% end %>:
+    <span class="label label-danger"><%= time_ago_in_words(@tender.data_end) %> <%= @tender.overdue? ? 'назад' : '' %></span>
+  </div>
+  <div class="col-md-3 col-lg-2">
+    <i class="glyphicon glyphicon-info-sign"></i> Статус: <span class="label label-primary"><%= @tender.status %></span>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <i class="glyphicon glyphicon-user"></i> Мнеджер: <span class="label label-primary"><%= @tender.manager.name %></span>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-6 col-lg-6">
+    <% if @tender.uslovie? %>
+        <h4>Условия тендера:</h4>
+        <%= @tender.uslovie %>
+    <% end %>
+  </div>
+  <div class="col-md-6 col-lg-6">
+    <% if @tender.dopuslovie? %>
+        <h4>Дополнительные условия:</h4>
+        <%= @tender.dopuslovie %>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <%= link_to @tender.fls_file_name, @tender.fls.url, target: '_blank' %>
+  </div>
+</div>
+<hr>
+<%= simple_form_for @tender, method: :post, as: :tender, url: decide_admin_tender_path do |f| %>
+    <%= f.fields_for :items do |ff| %>
+        <% item = ff.object %>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <h3>
+              <div class="accordion-heading g_green">
+            <span class="label label-success col-md-12 col-lg-12">
+              <%= item.name %>
+              <%= item.quantity %>
+              <%= item.measure_unit %>
+              <% if item.description? %>
+                        <div class="btn btn-xs btn-danger" data-toggle="modal" data-target="#item-description-<%= item.id %>" title="Описание к данной позиции">
+                          Описание
+                        </div>
+                        <div class="modal fade" id="item-description-<%= item.id %>" tabindex="-1" role="dialog" aria-labelledby="#item-description-<%= item.id %>-label" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title" id="#item-description-<%= item.id %>-label ">Описание к данной позиции</h4>
+                              </div>
+                              <div class="modal-body">
+                                <%= item.description %>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    <% end %>
+              ГОСТ: <%= item.gost %>
+            </span>
+              </div>
+            </h3>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped tender_show_admin">
+            <thead>
+            <tr>
+              <th>Название компании</th>
+              <th>Цена за ед. с НДС в грн.</th>
+              <th>Сумма по позиции с НДС в грн.</th>
+              <th>Срок поставки, дней</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>
+                <% if can? :update, @tender %>
+                    <% if @tender.status_id == Tender::SUSPENDED %>
+                        <label><%= ff.radio_button :winner_id, false %> Нет победителя</label>
+                    <% end %>
+                <% end %>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <% ff.object.user_items.with_price.order(price: :asc).each do |user_item| %>
+                <tr>
+                  <td><%= link_to user_item.user_tender.user.company, admin_user_path(user_item.user_tender.user) %></td>
+                  <td>
+                    <% if @tender.etap == 2 %>
+                        <b><%= user_item.price %></b>
+                        <% if user_item.first_price_second_stage.nil? %>
+                            <% fpc = user_item.price - user_item.price %>
+                        <% else %>
+                            <% fpc = user_item.price - user_item.first_price_second_stage %>
+                        <% end %>
+                        <% unless fpc == 0 %>
+                            <% if fpc < 0 %>
+                                <b class="color-green">( <i class="glyphicon glyphicon-menu-down" title="Опустил цену"></i> <%= fpc %> )</b>
+                            <% else %>
+                                <b class="color-red">( <i class="glyphicon glyphicon-menu-up" title="Поднял цену"></i> +<%= fpc %> )</b>
+                            <% end %>
+                        <% end %>
+                    <% else %>
+                        <b><%= user_item.price %></b>
+                        <% if user_item.first_price.nil? %>
+                            <% pc = user_item.price - user_item.price %>
+                        <% else %>
+                            <% pc = user_item.price - user_item.first_price %>
+                        <% end %>
+                        <% unless pc == 0 %>
+                            <% if pc < 0 %>
+                                <b class="color-green">( <i class="glyphicon glyphicon-menu-down" title="Опустил цену"></i> <%= pc %> )</b>
+                            <% else %>
+                                <b class="color-red">( <i class="glyphicon glyphicon-menu-up" title="Поднял цену"></i> +<%= pc %> )</b>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td><b><%= user_item.price * item.quantity %></b></td>
+                  <td><b><%= user_item.delivery %></b></td>
+                  <td>
+                    <% if user_item.comm? %>
+                        <div class="btn btn-xs btn-info" data-toggle="modal" data-target="#item-comm-<%= user_item.id %>" title="Примечание поставщика к данной позиции">
+                          Примечание
+                        </div>
+                        <div class="modal fade" id="item-comm-<%= user_item.id %>" tabindex="-1" role="dialog" aria-labelledby="#item-comm-<%= user_item.id %>-label" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title" id="#item-comm-<%= user_item.id %>-label">Примечание к данной позиции</h4>
+                              </div>
+                              <div class="modal-body">
+                                <%= user_item.comm %>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% if user_item.user_tender.description? %>
+                        <div class="btn btn-xs btn-primary" data-toggle="modal" data-target="#tender-description-<%= user_item.id %>" title="Общее примечание к тендеру от поставщика">
+                          Коментарий
+                        </div>
+                        <div class="modal fade" id="tender-description-<%= user_item.id %>" tabindex="-1" role="dialog" aria-labelledby="#tender-description-<%= user_item.id %>-label" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title" id="#tender-description-<%= user_item.id %>-label">Примечание к данной позиции</h4>
+                              </div>
+                              <div class="modal-body">
+                                <%= user_item.user_tender.description %>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% if user_item.user_tender.file? %>
+                        <div class="btn btn-xs btn-warning" data-toggle="modal" data-target="#tender-file-<%= user_item.id %>" title="Прикрепленные файлы">
+                          Файлы
+                        </div>
+                        <div class="modal fade" id="tender-file-<%= user_item.id %>" tabindex="-1" role="dialog" aria-labelledby="#tender-file-<%= user_item.id %>-label" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title" id="#tender-file-<%= user_item.id %>-label">Прикрепленные файлы к тендеру от поставщика</h4>
+                              </div>
+                              <div class="modal-body">
+                                <%= link_to user_item.user_tender.file_file_name, user_item.user_tender.file.url, target: '_blank' %>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    <% end %>
+                    <td>
+                      <% if can? :update, @tender %>
+                          <% if @tender.status_id == Tender::SUSPENDED %>
+                              <label><%= ff.radio_button :winner_id, user_item.id %> Выбрать</label>
+                          <% end %>
+                      <% end %>
+                      <% if [Tender::FINISHED, Tender::ARCHIVED].include?(@tender.status_id) && ff.object.winner_id == user_item.id %>
+                          Победитель
+                      <% end %>
+                    </td>
+                    </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+    <% end %>
+    <% if can? :update, @tender %>
+        <% if @tender.status_id == Tender::SUSPENDED %>
+            <%= f.submit 'Завершить тендер и разослать уведомления', class: 'btn btn-success btn-large' %>
+        <% end %>
+    <% end %>
+<% end %>
+<% if can? :update, @tender %>
+    <% if @tender.status_id == Tender::OPENED %>
+        <%= render 'cancel_tender' %>
+    <% end %>
+    <% if @tender.status_id == Tender::SUSPENDED %>
+        <%= render 'end_tender' %>
+    <% end %>
+    <% if @tender.status_id == Tender::FINISHED %>
+        <%= render 'archive_tender' %>
+    <% end %>
+<% end %>

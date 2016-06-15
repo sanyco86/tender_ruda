@@ -1,0 +1,12 @@
+<%= form_for [:admin, @tender.becomes(Tender)], as: :tender, url: start_second_stage_admin_tender_path(@tender)  do |f| %>
+  <div class="form-group">
+    <%= f.label :data_end, 'Дата окончания II тура.' %>
+    <div class='input-group date' id='datetimepicker2'>
+      <%= f.text_field :data_end, class: 'form-control' %>
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-calendar"></span>
+      </span>
+    </div>
+  </div>
+  <%= f.submit 'Начать второй тур', class: 'btn btn-warning btn-large' %>
+<% end %>

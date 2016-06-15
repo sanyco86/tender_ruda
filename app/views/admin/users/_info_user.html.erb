@@ -1,0 +1,62 @@
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Компания</th>
+      <th>E-mail</th>
+      <th>Ф.И.О.</th>
+      <th>Должность</th>
+      <th>Телефон</th>
+      <th>Адрес</th>
+      <th>WWW</th>
+      <th>Категории</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><%= @user.company %></td>
+      <td><%= mail_to @user.email, @user.email, subject: 'ООО "ТИС-РУДА"' %></td>
+      <td><%= @user.name %></td>
+      <td><%= @user.function %></td>
+      <td><%= @user.phone %></td>
+      <td><%= @user.adds %></td>
+      <% if @user.www.nil? %>
+          <td></td>
+      <% else %>
+          <td><%= link_to @user.www, @user.www, target: '_blank'   %></td>
+      <% end %>
+      <td>
+        <div class="btn btn-xs btn-warning" data-toggle="modal" data-target="#user-cat-<%= @user.id %>" title="Категории товаров">
+          Категории
+        </div>
+        <div class="modal fade" id="user-cat-<%= @user.id %>" tabindex="-1" role="dialog" aria-labelledby="#user-cat-<%= @user.id %>-label" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="#user-cat-<%= @user.id %>-label">Категории товаров</h4>
+              </div>
+              <div class="modal-body">
+                <%= formatted_categories(@user.categories) %>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td><%= link_to 'НДС', @user.file_nds.url, class: 'btn btn-xs btn-primary', target: '_blank'  %></td>
+      <td><%= link_to 'Регистрация', @user.file_reg.url, class: 'btn btn-xs btn-info', target: '_blank'  %></td>
+      <td>
+        <% if can? :manage, @user %>
+            <%= link_to 'Изменить', edit_admin_user_path(@user), class: 'btn btn-warning btn-xs' %>
+            <%= link_to 'Удалить', admin_user_path(@user), class: 'btn btn-xs btn-danger', method: :delete, data: { confirm: 'Вы уверены?' } %> <%= @user.active %>
+        <% end %>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

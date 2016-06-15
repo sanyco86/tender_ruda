@@ -1,0 +1,21 @@
+Добрый день!<br>
+ООО "ТИС-РУДА" приглашает Вас принять участие в тендере <strong><%= link_to @tender.name, new_user_tender_url(tender_id: @tender.id) %></strong><br>
+Позиции:
+<% @tender.items.each do |item| %>
+  <ul>
+    <li><%= item.name %> - <%= item.quantity %> <%= item.measure_unit %> ГОСТ: <%= item.gost %></li>
+  </ul>
+<% end %>
+<br>
+Вы получили данное приглашение так как зарегистрированы в системе тендерных закупок ООО "ТИС-РУДА" и в своем <%= link_to 'профиле', edit_user_url(@user) %> выбрали категории:
+<ul>
+  <% @user.user_categories.select{|uc| @tender.categories.ids.include?(uc.category_id) }.each do |user_category| %>
+    <li><%= user_category.category.name %></li>
+  <% end %>
+</ul>
+<br>
+Для участия в тендере вам необходимо пройти по ссылке <strong><%= link_to @tender.name, new_user_tender_url(tender_id: @tender.id) %></strong> и оставить ваше предложение.
+<br>
+Если вы не желаете получать подобные уведомления, зайдите в свой <%= link_to 'профиль', edit_user_url(@user) %> и снимите выделения со всех категорий.
+<br>
+<%= render 'mailers/sign' %>

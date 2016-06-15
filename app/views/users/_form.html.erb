@@ -1,0 +1,57 @@
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="text-center text-danger"><%= title %></h2>
+        <%= simple_form_for(@user) do |f| %>
+            <%= render 'shared/error_messages', target: @user %>
+            <div class="col-md-6">
+              <div class="form-group">
+                <%= f.input :name, placeholder: 'Полное Ф.И.О.'%>
+              </div>
+              <div class="form-group">
+                <%= f.input :company, placeholder: 'Название компании' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :function, placeholder: 'Должность' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :phone, placeholder: 'Контактный телефон' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :email, placeholder: 'Enter email' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :adds, placeholder: 'Юридический адрес' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :www %>
+              </div>
+              <p class="text-danger">Поддерживаемые форматы файлов: jpeg, png, pdf и tiff
+                <br>Максимальный размер: 2Мб</p>
+              <div class="form-group">
+                <%= f.input :file_nds, placeholder: 'Полное Ф.И.О.' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :file_reg, placeholder: 'Полное Ф.И.О.' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :password, placeholder: 'Пароль' %>
+              </div>
+              <div class="form-group">
+                <%= f.input :password_confirmation, placeholder: 'Подтверждение пароля' %>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h4>Сферы деятельности</h4>
+              <p class="text-danger">Вы будете получать уведомления о тендерах, проходящих в выбранных категориях.</p>
+              <%= f.association :categories, as: :check_boxes, label: false %>
+            </div>
+            <div class="col-md-12">
+              <%= f.submit (f.object.new_record? ? 'Зарегестрироваться' : 'Обновить данные'), class: 'btn btn-block btn-lg btn-primary' %>
+            </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

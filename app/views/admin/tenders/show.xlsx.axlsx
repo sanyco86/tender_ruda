@@ -1,0 +1,79 @@
+wb = xlsx_package.workbook
+
+#styles
+header_style = wb.styles.add_style bg_color: 'D99795',
+                                   b: true,
+                                   border: {style: :thin, color: '00'},
+                                   alignment: {horizontal: :center,
+                                               vertical: :center,
+                                               wrap_text: true},
+                                   sz: 11
+
+item_style = wb.styles.add_style bg_color: 'BFBFBF',
+                                 b: true,
+                                 border: {style: :thin, color: '00'},
+                                 alignment: {horizontal: :center,
+                                             vertical: :center,
+                                             wrap_text: true},
+                                 sz: 11
+
+
+
+wb.add_worksheet(name: 'Тендер') do |sheet|
+
+  sheet.add_row [
+                    "Тендер №#{@tender.id} #{@tender.name}",
+                    'Цена, грн с НДС',
+                    'Сумма, грн с НДС',
+                    'Поставка, раб.дней',
+                    'Примечание к позиции',
+                    'Коментарий к тендеру'
+                ], style: header_style
+  @tender.items.each do |item|
+    sheet.add_row [
+                      "#{item.name} - #{item.quantity} #{item.measure_unit} ГОСТ: #{item.gost}",
+                      '',
+                      '',
+                      '',
+                      '',
+                      ''
+                  ], style: item_style
+    if item.user_items.present?
+      lowest_price = item.user_items.order(price: :asc).first.price
+      item.user_items.order(price: :asc).each do |user_item|
+
+        unless user_item.price.nil?
+
+          user_style_bg_color = 'FFFF00' if user_item.price == lowest_price
+
+          user_style = wb.styles.add_style border: {style: :thin, color: '00'},
+                                           alignment: {horizontal: :center,
+                                                       vertical: :center,
+                                                       wrap_text: true},
+                                           bg_color: user_style_bg_color,
+                                           sz: 11
+          sheet.add_row [
+                            user_item.user_tender.user.company,
+                            user_item.price,
+                            user_item.price * item.quantity,
+                            user_item.delivery,
+                            user_item.comm,
+                            user_item.user_tender.description
+                        ], style: user_style
+
+
+        end
+      end
+    else
+      sheet.add_row ['В данном тендере никто не участвовал']
+    end
+  end
+
+  sheet.column_widths 35, 10, 10, 10, 30, 122
+  sheet.sheet_view.pane do |pane|
+    pane.top_left_cell = 'B2'
+    pane.state = :frozen_split
+    pane.y_split =1
+    pane.active_pane = :bottom_right
+  end
+end

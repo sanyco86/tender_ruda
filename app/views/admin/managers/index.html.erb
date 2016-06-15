@@ -1,0 +1,19 @@
+<% provide(:title, 'Менеджеры') %>
+<h2 class="sub-header">Менеджеры</h2>
+<% if can? :manage, @manager %>
+    <%= link_to 'Добавить', admin_signup_path, class: 'btn btn-success' %>
+<% end %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Ф.И.О.</th>
+      <th>E-mail</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <%= render @managers %>
+    </tbody>
+  </table>
+</div>

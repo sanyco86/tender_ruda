@@ -1,0 +1,11 @@
+<% provide(:title, 'Востановление пароля') %>
+<div class="container">
+  <%= form_tag password_resets_path, :class => 'form-signin', :role => 'form' do %>
+      <h3 class="form-signin-heading">Востановление пароля</h3>
+      <p class="text-danger">Пожалуйста введите ваш Email и нажмите "Сбросить пароль".</p>
+      <label for="inputEmail" class="sr-only">Email address</label>
+      <%= email_field_tag :email, nil, class: 'form-control', placeholder: 'Email address', required: '', autofocus: '' %>
+      <br>
+      <%= submit_tag 'Сбросить пароль', class: 'btn btn-lg btn-primary btn-block' %>
+  <% end %>
+</div>

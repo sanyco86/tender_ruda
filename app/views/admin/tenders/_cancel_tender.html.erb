@@ -1,0 +1,10 @@
+
+  <%= form_for [:admin, @tender.becomes(Tender)] do |f| %>
+      <%= f.hidden_field :status_id, :value => 2 %>
+      <%= f.submit 'Закончить тендер раньше срока', class: 'btn btn-primary btn-large' %>
+  <% end %>
+<br>
+  <%= form_for [:admin, @tender.becomes(Tender)], url: close_without_winner_admin_tender_path(@tender) do |f| %>
+      <%= f.hidden_field :status_id, :value => 5 %>
+      <%= f.submit 'Закончить тендер без победителя', class: 'btn btn-danger btn-large' %>
+  <% end %>

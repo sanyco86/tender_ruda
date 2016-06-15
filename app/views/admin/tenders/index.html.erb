@@ -1,0 +1,174 @@
+<% provide(:title, 'Тендеры') %>
+<ul class="tabs">
+  <li><a href="#tab1">Открыт <span class="label label-success"><%= @tenders.opened.count %></span></a></li>
+  <li><a href="#tab2">Приостановлен <span class="label label-success"><%= @tenders.suspended.count %></span></a></li>
+  <li><a href="#tab3">Завершен <span class="label label-success"><%= @tenders.finished.count %></span></a></li>
+  <li><a href="#tab4">Архивирован <span class="label label-success"><%= @tenders.archived.count %></span></a></li>
+</ul>
+<h2 class="sub-header">Тендеры</h2>
+<p><i class="glyphicon glyphicon-book"> </i> Всего тендеров: <span class="label label-success"><%= @tenders.count %></span></p>
+<% if can? :new, @tender %>
+    <%= link_to 'Добавить', new_admin_tender_path, class: 'btn btn-success' %>
+<% end %>
+<div class="table-responsive">
+  <div id="tab1" class="tab_content">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Заголовок</th>
+        <th>Категории</th>
+        <th>Начало тендера</th>
+        <th>Конец тендера</th>
+        <th>Менеджер</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @tenders.where(status_id: 1).each do |tender| %>
+          <tr>
+            <td><%= tender.id %></td>
+            <td>
+              <% if tender.etap == 2 %>
+                  (II Тур.)
+              <% end %>
+              <%= link_to tender.name, admin_tender_path(tender) %>
+            </td>
+            <td><%= formatted_categories(tender.categories) %></td>
+            <td><%= tender.data_start.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.data_end.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.manager.name %></td>
+            <td><%= tender.status %></td>
+            <td>
+              <% if can? :manage, @tender %>
+                  <%= link_to 'Изменить', edit_admin_tender_path(tender), class: 'btn btn-xs btn-warning' %>
+                  <%= link_to 'Удалить', admin_tender_path(tender), class: 'btn btn-xs btn-danger', method: :delete, data: { confirm: 'Вы уверены?' } %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="tab2" class="tab_content">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Заголовок</th>
+        <th>Категории</th>
+        <th>Начало тендера</th>
+        <th>Конец тендера</th>
+        <th>Менеджер</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @tenders.where(status_id: 2).each do |tender| %>
+          <tr>
+            <td><%= tender.id %></td>
+            <td>
+              <% if tender.etap == 2 %>
+                  (II Тур.)
+              <% end %>
+              <%= link_to tender.name, admin_tender_path(tender) %>
+            </td>
+            <td><%= formatted_categories(tender.categories) %></td>
+            <td><%= tender.data_start.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.data_end.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.manager.name %></td>
+            <td><%= tender.status %></td>
+            <td>
+              <% if can? :manage, @tender %>
+                  <%= link_to 'Изменить', edit_admin_tender_path(tender), class: 'btn btn-xs btn-warning' %>
+                  <%= link_to 'Удалить', admin_tender_path(tender), class: 'btn btn-xs btn-danger', method: :delete, data: { confirm: 'Вы уверены?' } %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="tab3" class="tab_content">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Заголовок</th>
+        <th>Категории</th>
+        <th>Начало тендера</th>
+        <th>Конец тендера</th>
+        <th>Менеджер</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @tenders.where(status_id: 3).each do |tender| %>
+          <tr>
+            <td><%= tender.id %></td>
+            <td>
+              <% if tender.etap == 2 %>
+                  (II Тур.)
+              <% end %>
+              <%= link_to tender.name, admin_tender_path(tender) %>
+            </td>
+            <td><%= formatted_categories(tender.categories) %></td>
+            <td><%= tender.data_start.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.data_end.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.manager.name %></td>
+            <td><%= tender.status %></td>
+            <td>
+              <% if can? :manage, @tender %>
+                  <%= link_to 'Изменить', edit_admin_tender_path(tender), class: 'btn btn-xs btn-warning' %>
+                  <%= link_to 'Удалить', admin_tender_path(tender), class: 'btn btn-xs btn-danger', method: :delete, data: { confirm: 'Вы уверены?' } %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="tab4" class="tab_content">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Заголовок</th>
+        <th>Категории</th>
+        <th>Начало тендера</th>
+        <th>Конец тендера</th>
+        <th>Менеджер</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @tenders.where(status_id: 4).each do |tender| %>
+          <tr>
+            <td><%= tender.id %></td>
+            <td>
+              <% if tender.etap == 2 %>
+                  (II Тур.)
+              <% end %>
+              <%= link_to tender.name, admin_tender_path(tender) %>
+            </td>
+            <td><%= formatted_categories(tender.categories) %></td>
+            <td><%= tender.data_start.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.data_end.strftime('%d-%m-%Y %H:%M') %></td>
+            <td><%= tender.manager.name %></td>
+            <td><%= tender.status %></td>
+            <td>
+              <% if can? :manage, @tender %>
+                  <%= link_to 'Изменить', edit_admin_tender_path(tender), class: 'btn btn-xs btn-warning' %>
+                  <%= link_to 'Удалить', admin_tender_path(tender), class: 'btn btn-xs btn-danger', method: :delete, data: { confirm: 'Вы уверены?' } %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

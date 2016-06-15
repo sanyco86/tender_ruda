@@ -1,0 +1,75 @@
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#responsive-menu">
+        <span class="sr-only">Открыть навигацию</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= link_to 'Система online закупок', admin_root_path, class: 'navbar-brand' %>
+    </div>
+    <div id="responsive-menu" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <% if can? :edit, @current_manager %>
+        <li class="dropdown">
+          <a href="#" data-toggle="dropdown" class="dropdown-toggle">Тендеры <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <%= link_to 'Новый тендер', new_admin_tender_path %>
+            </li>
+            <li>
+              <%= link_to 'Текущие', admin_tenders_path %>
+            </li>
+          </ul>
+        </li>
+        <% else %>
+            <li><%= link_to 'Текущие', admin_tenders_path %></li>
+        <% end %>
+        <li>
+          <%= link_to 'Категории', admin_categories_path %>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Учетные записи<i class="caret"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <%= link_to 'Менеджеры', admin_managers_path %>
+            </li>
+            <li>
+              <%= link_to 'Поставщики', admin_users_path %>
+            </li>
+            <% if current_manager %>
+                <% if can? :manage, @current_manager %>
+                    <li><%= link_to 'Регистрация', admin_signup_path %></li>
+                    <li><%= link_to 'Статистика', admin_sidekiq_web_path, target: '_blank' %></li>
+                <% end %>
+            <% end %>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if current_manager %>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <%= link_to 'Профиль', admin_manager_path(current_manager), tabindex: '-1' %>
+                </li>
+                <li>
+                  <%= link_to 'Настройки', edit_admin_manager_path(current_manager) %>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <%= link_to 'Выход', admin_signout_path, tabindex: '-1', method: 'delete' %>
+                </li>
+              </ul>
+            </li>
+        <% else %>
+            <li><%= link_to 'Вход', admin_signin_path %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

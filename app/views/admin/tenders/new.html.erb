@@ -1,0 +1,10 @@
+<% provide(:title, 'Создать новый Тендер') %>
+<%= form_tag(new_admin_tender_path, method: 'POST') do %>
+	<form role="form">
+		<div class="form-group">
+			<%= text_area_tag(:data) %>
+		</div>
+		<%= submit_tag('Импорт') %>
+	</form>
+<% end %>
+<%= render partial: 'form', locals: { title: 'Создать новый Тендер' } %>

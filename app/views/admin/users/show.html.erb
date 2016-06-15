@@ -1,0 +1,32 @@
+<% provide(:title, @user.company) %>
+<%= render 'info_user' %>
+<h2 class="sub-header">Тендеры</h2>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>№</th>
+      <th>Заголовок</th>
+      <th>Котегория</th>
+      <th>Начало тендера</th>
+      <th>Конец тендера</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @user_tenders.each do |user_tender| %>
+        <tr>
+          <td><%= user_tender.tender.id %></td>
+          <td>
+            <% if user_tender.tender.etap == 2 %>
+                (II Тур.)
+            <% end %>
+            <%= link_to user_tender.tender.name, admin_tender_path(user_tender.tender) %>
+          </td>
+          <td><%= formatted_categories(user_tender.tender.categories) %></td>
+          <td><%= user_tender.tender.data_start.strftime('%-d-%m-%Y %H:%M') %></td>
+          <td><%= user_tender.tender.data_end.strftime('%-d-%m-%Y %H:%M') %></td>
+        </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

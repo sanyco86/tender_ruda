@@ -1,0 +1,90 @@
+<%= nested_form_for @tender, url: @tender.new_record? ? admin_tenders_path : admin_tender_path(@tender), method: 'POST', as: :tender do |f| %>
+    <div class="row">
+      <div class="col-lg-12">
+        <%= render 'shared/error_messages', target: @tender %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <%= title %>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <%= f.label :name, 'Заголовок' %>
+                  <%= f.text_field :name, class: 'form-control' %>
+                </div>
+                <% if f.object.new_record? %>
+                    <div class="form-group">
+                      <%= f.label :data_start, 'Дата начала' %>
+                      <div class='input-group date' id='datetimepicker1'>
+                        <%= f.text_field :data_start, class: 'form-control' %>
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <%= f.label :data_end, 'Дата окончания' %>
+                      <div class='input-group date' id='datetimepicker2'>
+                        <%= f.text_field :data_end, class: 'form-control' %>
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                      </div>
+                    </div>
+                <% end %>
+                <div class="form-group">
+                  <%= f.label :manager_id, 'Менеджер' %>
+                      <%= current_manager.name %>
+                      <%= f.hidden_field :manager_id, :value => @current_manager.id %>
+                </div>
+                <div class="form-group">
+                  <%= f.label :uslovie, 'Условия тендера' %>
+                  <%= f.text_area :uslovie, rows: '4', class: 'form-control' %>
+                </div>
+                <div class="form-group">
+                  <%= f.label :dopuslovie, 'Дополнительно' %>
+                  <%= f.text_area :dopuslovie, rows: '4', class: 'form-control' %>
+                </div>
+                <div class="form-group">
+                  <%= f.label :fls, 'Прикрепить файл' %>
+                  <%= f.file_field :fls %>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <h1>Категории тендеров</h1>
+                <div class="form-group">
+                  <p class="help-block">От категории зависит группа рассылки приглашений для поставщиков</p>
+                  <%= f.label :categories, 'Категории' %>
+                  <%= f.collection_check_boxes(:category_ids, Category.all, :id, :name, prompt: true) do |b| %>
+                      <% b.label(class: 'checkbox') { b.check_box + ' ' + b.text }  %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-12">
+                <h2 class="sub-header">Добавить позиции</h2>
+                <div class="table-responsive">
+                  <%= f.fields_for :items do |items_form| %>
+                      <%= render 'item_fields', :f => items_form %>
+                  <% end %>
+                </div>
+                <% if f.object.new_record? %>
+                    <%= f.link_to_add 'Добавить', :items, class: 'btn btn-xs btn-success' %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="panel-heading">
+            <%= f.submit (f.object.new_record? ? 'Создать' : 'Обновить'), class: 'btn btn-primary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+<% end %>

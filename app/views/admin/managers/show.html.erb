@@ -1,0 +1,31 @@
+<% provide(:title, @manager.name) %>
+<h2 class="sub-header"><%= @manager.name %></h2>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>№</th>
+      <th>Заголовок</th>
+      <th>Котегория</th>
+      <th>Начало тендера</th>
+      <th>Конец тендера</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @manager.tenders.each do |tender| %>
+        <tr>
+          <td><%= tender.id %></td>
+          <td>
+            <% if tender.etap == 2 %>
+                (II Тур.)
+            <% end %>
+            <%= link_to tender.name, admin_tender_path(tender) %>
+          </td>
+          <td><%= formatted_categories(tender.categories) %></td>
+          <td><%= tender.data_start.strftime('%Y-%m-%-d %H:%M') %></td>
+          <td><%= tender.data_end.strftime('%Y-%m-%-d %H:%M') %></td>
+        </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

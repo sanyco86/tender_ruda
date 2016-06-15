@@ -1,0 +1,38 @@
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
+        <span class="sr-only">Открыть навигацию</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= link_to 'Система online закупок', root_path, class: 'navbar-brand' %>
+    </div>
+    <div class="collapse navbar-collapse" id="responsive-menu">
+      <ul class="nav navbar-nav">
+        <li><%= link_to 'Открытые тендеры', root_path %></li>
+        <li><%= link_to 'Архив тендеров', archive_path %></li>
+        <% if  current_user %>
+            <li><%= link_to 'Мои текущие тендеры', user_tenders_path %></li>
+            <li><%= link_to 'Мои архивные тендеры', my_archive_path %></li>
+        <% end %>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if  current_user %>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Настройки', edit_user_path(current_user) %></li>
+                <li class="divider"></li>
+                <li><%= link_to 'Выход', logout_url, method: :delete  %></li>
+              </ul>
+            </li>
+        <% else %>
+            <li><%= link_to 'Вход', login_url %></li>
+            <li><%= link_to 'Регистрация', reg_url %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

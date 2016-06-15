@@ -1,0 +1,64 @@
+<% provide(:title, @category.name) %>
+<ul class="tabs">
+  <li><a href="#tab1">Поставщики</a></li>
+  <li><a href="#tab2">Тендеры</a></li>
+</ul>
+<h2 class="sub-header">Категории</h2>
+<div class="table-responsive">
+  <div id="tab1" class="tab_content">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Компания</th>
+        <th>E-mail</th>
+        <th>Ф.И.О.</th>
+        <th>Телефон</th>
+        <th>Адрес</th>
+        <th></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @category.users.each do |user| %>
+          <tr>
+            <td><%= link_to user.company, admin_user_path(user) %></td>
+            <td><%= mail_to user.email, user.email, subject: 'ООО "ТИС-РУДА"' %></td>
+            <td><%= user.name %></td>
+            <td><%= user.phone %></td>
+            <td><%= user.adds %></td>
+            <td><%= link_to 'НДС', user.file_nds.url, class: 'btn btn-xs btn-primary', target: '_blank'  %></td>
+            <td><%= link_to 'Регистрация', user.file_reg.url, class: 'btn btn-xs btn-info', target: '_blank'  %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="tab2" class="tab_content">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Заголовок</th>
+        <th>Начало тендера</th>
+        <th>Конец тендера</th>
+        <th>Менеджер</th>
+        <th>Статус</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @category.tenders.each do |tender| %>
+          <tr>
+            <td><%= tender.id %></td>
+            <td><%= link_to tender.name, admin_tender_path(tender) %></td>
+            <td><%= tender.data_start.strftime('%-d-%m-%Y %H:%M') %></td>
+            <td><%= tender.data_end.strftime('%-d-%m-%Y %H:%M') %></td>
+            <td><%= tender.manager.name %></td>
+            <td><%= tender.status %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+

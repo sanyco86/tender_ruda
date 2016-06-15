@@ -1,0 +1,89 @@
+<% provide(:title, 'Мои текущие тендеры') %>
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <% @user_tenders.each do |user_tender| %>
+            <% hundred_percent = user_tender.tender.data_end - user_tender.tender.data_start %>
+            <% x_date = Time.zone.now - user_tender.tender.data_start %>
+            <% data_now_percent = x_date * 100 / hundred_percent  %>
+            <% unless user_tender.tender.status_id > 1 %>
+                <h2 class="text-danger">Тендер №<%= user_tender.tender.id %> <%= user_tender.tender.name %>
+                  <% if user_tender.tender.etap == 2 %>
+                      (II Тур.)
+                  <% end %>
+                </h2>
+                <h5>
+                  <i>
+                    <b>Категория товаров:</b>
+                  </i><%= formatted_categories(user_tender.tender.categories) %></h5>
+                <div class="progress progress-striped active">
+                  <div class="progress-bar progress-bar-success" style="width: <%= data_now_percent %>%">
+                    <span class="sr-only"><%= data_now_percent %>% Complete (success)</span>
+                  </div>
+                </div>
+                <a class="btn btn-block btn-info btn-lg" data-toggle="collapse" href="#collapse<%= user_tender.tender.id %>"><span class="glyphicon glyphicon-info-sign"></span> Подробнее</a>
+                <br>
+                <div id="collapse<%= user_tender.tender.id %>" class="accordion-body collapse">
+                  <div class="col-md-4">
+                    <i class="glyphicon glyphicon-calendar"></i>Срок:
+                    <span class="label label-primary"><%= user_tender.tender.data_start.strftime('%d-%m-%Y %H:%M') %> — <%= user_tender.tender.data_end.strftime('%d-%m-%Y %H:%M') %></span>
+                  </div>
+                  <div class="col-md-4">
+                    <i class="glyphicon glyphicon-dashboard"></i> <% if user_tender.tender.status_id == Tender::OPENED %>До окончания <% else %>Окончен <% end %>:
+                    <span class="label label-danger"><%= time_ago_in_words(user_tender.tender.data_end) %></span>
+                  </div>
+                  <div class="col-md-4">
+                    <i class="glyphicon glyphicon-info-sign"></i> Статус: <span class="label label-primary"><%= user_tender.tender.status %></span>
+                  </div>
+                  <br>
+                  <hr>
+                  <div class="col-md-6">
+                    <% if user_tender.tender.uslovie? %>
+                        <h3>Условия тендера:</h3>
+                        <p><%= user_tender.tender.uslovie %></p>
+                    <% end %>
+                  </div>
+                  <div class="col-md-6">
+                    <% if user_tender.tender.dopuslovie? %>
+                        <h3>Дополнительные условия:</h3>
+                        <p><%= user_tender.tender.dopuslovie %></p>
+                    <% end %>
+                  </div>
+                  <div class="col-md-12">
+                    <%= link_to user_tender.tender.fls_file_name, user_tender.tender.fls.url, target: '_blank' %>
+                  </div>
+                  <br>
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>Название</th>
+                      <th>Кол-во</th>
+                      <th>Ед.изм.</th>
+                      <th>ГОСТ</th>
+                      <th>Описание</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% user_tender.tender.items.each do |item| %>
+                        <tr>
+                          <td><%= item.name %> </td>
+                          <td><%= item.quantity %> </td>
+                          <td><%= item.measure_unit %></td>
+                          <td><%= item.gost %></td>
+                          <td><%= item.description %></td>
+                        </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+                <%= link_to edit_user_tender_path(user_tender), class: 'btn btn-block btn-lg btn-primary' do %>
+                    <span class="glyphicon glyphicon-ok-sign"></span> Обновить предложение
+                <% end %>
+                <hr>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

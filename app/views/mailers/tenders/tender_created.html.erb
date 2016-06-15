@@ -1,0 +1,8 @@
+Менеджер <%= @tender.manager.name %> создал новый тендер №<%= @tender.id %> <%= @tender.name %><br>
+<br>
+Позиции:<br>
+<% @tender.items.each do |item| %>
+  <ul>
+    <li><%= item.name %> <%= item.quantity %> <%= item.measure_unit %> <%= item.gost %> <%= item.description %></li>
+  </ul>
+<% end %>

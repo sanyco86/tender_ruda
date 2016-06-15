@@ -1,0 +1,54 @@
+<h2 class="text-danger">Тендер №<%= @user_tender.tender.id %> <%= @user_tender.tender.name %>
+  <% if @user_tender.tender.etap == 2 %>
+      (II Тур.)
+  <% end %>
+</h2>
+<% hundred_percent = @user_tender.tender.data_end - @user_tender.tender.data_start %>
+<% x_date = Time.zone.now - @user_tender.tender.data_start %>
+<% data_now_percent = x_date * 100 / hundred_percent  %>
+<h5>
+  <i>
+    <b>Категория товаров:</b>
+  </i><%= formatted_categories(@user_tender.tender.categories) %></h5>
+<% if @user_tender.tender.status_id == Tender::OPENED %>
+    <div class="progress progress-striped active">
+      <div class="progress-bar progress-bar-success" style="width: <%= data_now_percent %>%">
+        <span class="sr-only"><%= data_now_percent %>% Complete</span>
+      </div>
+    </div>
+<% end %>
+<br>
+<div class="col-md-4">
+  <i class="glyphicon glyphicon-calendar"></i>Срок:
+  <span class="label label-primary">
+    <%= @user_tender.tender.data_start.strftime('%d-%m-%Y %H:%M') %> —
+    <%= @user_tender.tender.data_end.strftime('%d-%m-%Y %H:%M') %>
+  </span>
+</div>
+<div class="col-md-4">
+  <i class="glyphicon glyphicon-dashboard"></i> <% if @user_tender.tender.status_id == Tender::OPENED %>До окончания <% else %>Окончен <% end %>:
+  <span class="label label-danger"><%= time_ago_in_words(@user_tender.tender.data_end) %></span>
+</div>
+<div class="col-md-4">
+  <i class="glyphicon glyphicon-info-sign"></i> Статус: <span class="label label-primary"><%= @user_tender.tender.status %></span>
+</div>
+<br>
+<hr>
+<div class="col-md-6">
+  <% if @user_tender.tender.uslovie? %>
+      <h3>Условия тендера:</h3>
+      <p><%= @user_tender.tender.uslovie %></p>
+  <% end %>
+</div>
+<div class="col-md-6">
+  <% if @user_tender.tender.dopuslovie? %>
+      <h3>Дополнительные условия:</h3>
+      <p><%= @user_tender.tender.dopuslovie %></p>
+  <% end %>
+</div>
+<div class="col-md-6">
+  <%= link_to @user_tender.tender.fls_file_name, @user_tender.tender.fls.url, target: '_blank' %>
+</div>
+<hr>
+<%= render 'shared/error_messages', target: @user_tender %>
+<br>

@@ -1,0 +1,30 @@
+<% provide(:title, 'Категории тендеров') %>
+<h2 class="sub-header">Категории тендеров</h2>
+<% if can? :new, @category %>
+    <%= link_to 'Добавить', new_admin_category_path, class: 'btn btn-success' %>
+<% end %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>№</th>
+      <th>Название</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @categories.each do |category| %>
+        <tr>
+          <td><%= category.id %></td>
+          <td><%= link_to category.name, admin_category_path(category) %></td>
+          <td>
+            <% if can? :manage, @category %>
+                <%= link_to 'Изменить', edit_admin_category_path(category), class: 'btn btn-warning btn-xs' %>
+                <%= link_to 'Удалить', admin_category_path(category), class: 'btn btn-danger btn-xs', method: :delete, data: { confirm: 'Вы уверены?' } %>
+            <% end %>
+          </td>
+        </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,22 @@
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Название</th>
+    <th>Колл-во</th>
+    <th>Ед.изм.</th>
+    <th>ГОСТ</th>
+    <th>Описание</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td><%= f.text_field :name, class: 'form-control' %></td>
+    <td><%= f.text_field :quantity, class: 'form-control' %></td>
+    <td><%= f.collection_select(:measure_unit, MeasureUnit.all, :name, :name) %></td>
+    <td><%= f.text_field :gost, class: 'form-control' %></td>
+    <td><%= f.text_field :description, class: 'form-control' %></td>
+    <td><%= f.link_to_remove 'Удалить', class: 'btn btn-xs btn-danger' %></td>
+  </tr>
+  </tbody>
+</table>

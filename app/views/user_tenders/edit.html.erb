@@ -1,0 +1,87 @@
+<% provide(:title, 'Редактор заявки') %>
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <%= form_for @user_tender do |f| %>
+            <%= render 'tender_info' %>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Название</th>
+                <th>Кол-во</th>
+                <th>Ед.изм.</th>
+                <th>ГОСТ</th>
+                <th></th>
+                <th>Цена за ед.
+                  <br>с НДС в грн.</th>
+                <th>Срок поставки,
+                  <br>раб.дней</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <%= f.fields_for :user_items do |user_items_form| %>
+                  <% item = user_items_form.object.item %>
+                  <tr>
+                    <td><%= item.name %> </td>
+                    <td><%= item.quantity %> </td>
+                    <td><%= item.measure_unit %></td>
+                    <td><%= item.gost %></td>
+                    <td>
+                      <% if item.description? %>
+                          <div class="btn btn-danger btn-xs" data-toggle="modal" data-target="#item-<%= item.id %>" title="Описание к данной позиции">
+                            описание
+                          </div>
+                          <div class="modal fade" id="item-<%= item.id %>" tabindex="-1" role="dialog" aria-labelledby="#item-<%= item.id %>-label" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h4 class="modal-title" id="#item-<%= item.id %>-label">Описание к данной позиции</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <%= item.description %>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      <% end %>
+                    </td>
+                    <td><%= user_items_form.text_field :price, class: 'input-xs' %></td>
+                    <td><%= user_items_form.text_field :delivery, class: 'input-xs' %></td>
+                    <td>
+                      <div class="btn btn-warning btn-xs" data-toggle="modal" data-target="#user_item-<%= item.id %>" title="Оставить примечание к данной позиции">
+                        примечание
+                      </div>
+                      <div class="modal fade" id="user_item-<%= item.id %>" tabindex="-1" role="dialog" aria-labelledby="#user_item-<%= item.id %>-label" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title" id="#user_item-<%= item.id %>-label">Оставить примечание к данной позиции</h4>
+                            </div>
+                            <div class="modal-body">
+                              <%= user_items_form.text_area :comm, class: 'form-control', rows: '5' %>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
+            <%= render 'form', f: f %>
+            <br>
+            <%= f.submit 'Обновить предложение', class: 'btn btn-lg btn-primary btn-block' %>
+        <% end %>
+        <hr>
+      </div>
+    </div>
+  </div>
+</div>

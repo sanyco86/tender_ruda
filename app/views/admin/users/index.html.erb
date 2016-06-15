@@ -1,0 +1,27 @@
+<% provide(:title, 'Поставщики') %>
+<h2 class="sub-header">Поставщики </h2>
+<p><i class="glyphicon glyphicon-user"> </i> Всего поставщиков: <span class="label label-success"><%= @users.count %></span></p>
+<%= will_paginate @users %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+        <tr>
+          <th>Компания</th>
+          <th>E-mail</th>
+          <th>Ф.И.О.</th>
+          <th>Должность</th>
+          <th>Телефон</th>
+          <th>Адрес</th>
+          <th>WWW</th>
+          <th>Категории</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <%= render @users %>
+    </tbody>
+  </table>
+</div>
+<%= will_paginate @users %>

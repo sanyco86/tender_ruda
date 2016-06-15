@@ -1,0 +1,11 @@
+<% provide(:title, 'Изменение пароля') %>
+<div class="container">
+  <%= form_tag password_reset_path, :method => :put, :class => 'form-signin', :role => 'form' do %>
+      <h3 class="form-signin-heading">Изменение пароля</h3>
+      <p class="text-danger">Пожалуйста введите новый пароль и нажмите "Изменить пароль".</p>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <%= password_field_tag :password, nil, class: 'form-control', placeholder: 'Password', required: '', autofocus: '' %>
+      <br>
+      <%= submit_tag 'Изменить пароль', class: 'btn btn-lg btn-primary btn-block' %>
+  <% end %>
+</div>

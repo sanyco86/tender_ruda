@@ -1,0 +1,82 @@
+<% @tenders.each do |tender| %>
+    <% hundred_percent = tender.data_end - tender.data_start %>
+    <% x_date = Time.zone.now - tender.data_start %>
+    <% data_now_percent = x_date * 100 / hundred_percent  %>
+    <h2 class="text-danger">Тендер №<%= tender.id %> <%= tender.name %>
+      <% if tender.etap == 2 %>
+          (II Тур.)
+      <% end %>
+    </h2>
+    <h5>
+      <i>
+        <b>Категория товаров:</b>
+      </i><%= formatted_categories(tender.categories) %></h5>
+    <% if tender.status_id == Tender::OPENED %>
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-success" style="width: <%= data_now_percent %>%">
+            <span class="sr-only"><%= data_now_percent %>% Complete (success)</span>
+          </div>
+        </div>
+    <% end %>
+    <a class="btn btn-block btn-info btn-lg" data-toggle="collapse" href="#collapse<%= tender.id %>"><span class="glyphicon glyphicon-info-sign"></span> Подробнее</a>
+    <br>
+    <div id="collapse<%= tender.id %>" class="accordion-body collapse">
+      <div class="col-md-4">
+        <i class="glyphicon glyphicon-calendar"></i>Срок:
+        <span class="label label-primary"><%= tender.data_start.strftime('%d-%m-%Y %H:%M') %> — <%= tender.data_end.strftime('%d-%m-%Y %H:%M') %></span>
+      </div>
+      <div class="col-md-4">
+        <i class="glyphicon glyphicon-dashboard"></i> <% if tender.status_id == Tender::OPENED %>До окончания <% else %>Окончен <% end %>:
+        <span class="label label-danger"><%= time_ago_in_words(tender.data_end) %></span>
+      </div>
+      <div class="col-md-4">
+        <i class="glyphicon glyphicon-info-sign"></i> Статус: <span class="label label-primary"><%= tender.status %></span>
+      </div>
+      <br>
+      <hr>
+      <div class="col-md-6">
+        <% if tender.uslovie? %>
+            <h3>Условия тендера:</h3>
+            <p><%= tender.uslovie %></p>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <% if tender.dopuslovie? %>
+            <h3>Дополнительные условия:</h3>
+            <p><%= tender.dopuslovie %></p>
+        <% end %>
+      </div>
+      <div class="col-md-12">
+        <%= link_to tender.fls_file_name, tender.fls.url, target: '_blank' %>
+      </div>
+      <br>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Название</th>
+          <th>Кол-во</th>
+          <th>Ед.изм.</th>
+          <th>ГОСТ</th>
+          <th>Описание</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% tender.items.each do |item| %>
+            <tr>
+              <td><%= item.name %> </td>
+              <td><%= item.quantity %> </td>
+              <td><%= item.measure_unit %></td>
+              <td><%= item.gost %></td>
+              <td><%= item.description %></td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if tender.status_id == Tender::OPENED %>
+        <%= link_to new_user_tender_path(tender_id: tender.id), class: 'btn btn-block btn-lg btn-primary' do %>
+            <span class="glyphicon glyphicon-ok-sign"></span> Принять участие в тендере
+        <% end %>
+    <% end %>
+    <hr>
+<% end %>

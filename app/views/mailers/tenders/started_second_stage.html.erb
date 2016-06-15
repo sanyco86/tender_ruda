@@ -1,0 +1,23 @@
+Добрый день!<br>
+Данным письмом уведомляем, что запущен второй тур тендера <strong>"<%= @tender.name %>"</strong><br>
+<br>
+У вас есть шанс предоставить предложение с лучшими условиями и выиграть данный тендер.<br>
+Просим зайти в систему тендерных закупок по <%= link_to 'ссылке', new_user_tender_url(tender_id: @tender.id) %> и обновить Ваше предложение на данную закупку.<br>
+
+Ниже Вы можете видеть с какими результатами был завершен первый тур:<br>
+<br>
+<% @tender.items.each do |item| %>
+  <ul>
+	  <li>
+      <%= item.name %>(<%= item.quantity %> <%= item.measure_unit %>) -
+      <% user_item = item.user_items.order(price: :asc).first %>
+      <% if user_item.price.nil? %> 
+        нет ставок.
+      <% else %>
+        цена за ед. <%= user_item.price %> грн., срок поставки <%= user_item.delivery %> д.
+      <% end %>
+	  </li>
+  </ul>
+<% end %>
+<br>
+<%= render 'mailers/sign' %>
