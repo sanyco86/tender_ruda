@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: user_tenders
+#
+#  id                :integer          not null, primary key
+#  description       :string
+#  status            :string
+#  tender_id         :integer
+#  user_id           :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  file_file_name    :string
+#  file_content_type :string
+#  file_file_size    :integer
+#  file_updated_at   :datetime
+#
+
 class UserTender < ActiveRecord::Base
   belongs_to :tender
   belongs_to :user
