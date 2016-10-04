@@ -22,14 +22,15 @@
 
 FactoryGirl.define do
   factory :tender do
-    manager
+    manager_id { create(:manager).id }
     name 'Канцелярские товары для бухгалтерии'
     status_id Tender::OPENED
     uslovie 'Товары качественные'
     dopuslovie 'Цены низкие'
-    data_start { Time.now }
+    data_start { Time.zone.now }
     data_end { 1.day.from_now }
     etap 1
+    category_ids { create(:category).id }
 
     trait :suspended do
       status_id Tender::SUSPENDED

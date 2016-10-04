@@ -19,4 +19,12 @@ require 'rails_helper'
 
 describe UserTender do
 
+  it { should belong_to(:tender) }
+  it { should belong_to(:user) }
+  it { should have_many(:user_items).dependent(:destroy ) }
+  it { should accept_nested_attributes_for(:user_items).allow_destroy(true) }
+
+  it { should have_attached_file(:file) }
+  it { should validate_attachment_content_type(:file).allowing('image/png', 'image/jpeg', 'image/tiff', 'application/pdf') }
+  it { should validate_attachment_size(:file).less_than(2.megabytes) }
 end

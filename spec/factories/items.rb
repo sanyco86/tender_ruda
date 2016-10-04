@@ -16,9 +16,8 @@
 #
 
 FactoryGirl.define do
-  factory :items do
-    edizm
-    quantity 1
+  factory :item do
+    quantity 10
     name 'Шариковые ручки'
     gost 'ГОСТ 12/13'
     description 'Синего цвета'

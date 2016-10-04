@@ -39,6 +39,31 @@
 require 'rails_helper'
 
 describe User do
+
+  it { should have_many(:user_categories) }
+  it { should have_many(:categories).through(:user_categories ) }
+  it { should have_many(:user_tenders).dependent(:destroy ) }
+  it { should have_many(:user_items).through(:user_tenders ) }
+  it { should validate_presence_of(:name) }
+  it { should validate_presence_of(:email) }
+  it { should validate_presence_of(:company) }
+  it { should validate_presence_of(:function) }
+  it { should validate_presence_of(:phone) }
+  it { should validate_presence_of(:adds) }
+  it { should validate_presence_of(:categories) }
+  it { should validate_presence_of(:file_nds) }
+  it { should validate_presence_of(:file_reg) }
+
+  it { should have_attached_file(:file_nds) }
+  it { should validate_attachment_presence(:file_nds) }
+  it { should validate_attachment_content_type(:file_nds).allowing('image/png', 'image/jpeg', 'image/tiff', 'application/pdf') }
+  it { should validate_attachment_size(:file_nds).less_than(2.megabytes) }
+
+  it { should have_attached_file(:file_reg) }
+  it { should validate_attachment_presence(:file_reg) }
+  it { should validate_attachment_content_type(:file_reg).allowing('image/png', 'image/jpeg', 'image/tiff', 'application/pdf') }
+  it { should validate_attachment_size(:file_reg).less_than(2.megabytes) }
+
   describe '#prepend_www' do
     context 'when site is without protocol' do
       it 'prepends it with "http://"' do

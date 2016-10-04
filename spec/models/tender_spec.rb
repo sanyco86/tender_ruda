@@ -24,61 +24,57 @@ require 'rails_helper'
 
 describe Tender do
 
-
   # it { should belong_to(:status) }
   it { should belong_to(:manager) }
   it { should have_many(:tender_categories).dependent(:destroy) }
   it { should have_many(:categories).through(:tender_categories) }
-
-
-
   it { should have_many(:user_tenders).dependent(:destroy) }
   it { should have_many(:users).through(:user_tenders) }
-
   it { should have_many(:items).dependent(:destroy) }
   it { should have_many(:user_items).through(:user_tenders).dependent(:destroy) }
-
-
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:manager_id) }
   it { should validate_presence_of(:categories) }
   it { should validate_presence_of(:data_end) }
   it { should validate_presence_of(:data_start) }
+  it { should have_attached_file(:fls) }
+  it { should validate_attachment_content_type(:fls).allowing('image/png', 'image/jpeg', 'image/tiff',
+                                                              'application/pdf', 'application/msword',
+                                                              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                                              'application/vnd.ms-excel',
+                                                              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') }
+  it { should validate_attachment_size(:fls).less_than(2.megabytes) }
+  it { expect(subject.status).to eq 'Открыт' }
 
-  # OPENED = 1
-  # SUSPENDED = 2
-  # FINISHED = 3
-  # ARCHIVED = 4
-  # STATUS_MAP = { OPENED => 'Открыт', SUSPENDED => 'Приостановлен', FINISHED => 'Завершен', ARCHIVED => 'Архивирован' }
-  #
+  context 'when data_end < Time.zone.now' do
+    before { subject.update(data_end: Time.zone.now - 1.hour) }
+
+    it { expect(subject.overdue?).to be true }
+  end
 
 
-  #
-  # has_attached_file :fls, :url => '/uploads/:attachment/:id/:style/:basename.:extension',
-  #                   :path => ':rails_root/public/uploads/:attachment/:id/:style/:basename.:extension',
-  #                   :default_url => ''
-  # validates_attachment_size :fls, :less_than => 2.megabytes
-  # validates_attachment_content_type :fls, :content_type => %w(image/jpeg image/png application/pdf image/tiff application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)
-  #
-  # scope :opened, -> { where(status: OPENED) }
-  # scope :suspended, -> { where(status: SUSPENDED) }
-  # scope :finished, -> { where(status: FINISHED) }
-  # scope :archived, -> { where(status: ARCHIVED) }
-  # scope :first_stage, -> { where(etap: 1) }
-  #
-  # def status
-  #   STATUS_MAP[status_id] || status_id
-  # end
-  #
-  # def opened?
-  #   status == OPENED
-  # end
-  #
-  # def finished?
-  #   status == FINISHED
-  # end
-  #
-  # def overdue?
-  #   data_end < Time.zone.now
-  # end
+
+  describe 'Scopes' do
+    let!(:tender_opened) { create :tender }
+    let!(:tender_suspended) { create :tender, status_id: 2 }
+    let!(:tender_finished) { create :tender, status_id: 3 }
+    let!(:tender_archived) { create :tender, status_id: 4 }
+    let!(:tender_two_stage) { create :tender, etap: 2 }
+
+    context 'opened' do
+      it { expect(Tender.opened).to match_array([tender_opened, tender_two_stage]) }
+    end
+    context 'suspended' do
+      it { expect(Tender.suspended).to match_array(tender_suspended) }
+    end
+    context 'finished' do
+      it { expect(Tender.finished).to match_array(tender_finished) }
+    end
+    context 'archived' do
+      it { expect(Tender.archived).to match_array(tender_archived) }
+    end
+    context 'first_stage' do
+      it { expect(Tender.first_stage).to_not match_array(tender_two_stage) }
+    end
+  end
 end

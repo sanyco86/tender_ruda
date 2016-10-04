@@ -12,6 +12,7 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 require 'shoulda/matchers'
+require 'paperclip/matchers'
 require 'capybara/rspec'
 require 'cancan/matchers'
 require 'sidekiq/testing'
@@ -30,6 +31,7 @@ end
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include Capybara::DSL
+  config.include Paperclip::Shoulda::Matchers
   config.order = :random
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = true

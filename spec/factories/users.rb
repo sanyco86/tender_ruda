@@ -42,7 +42,12 @@ FactoryGirl.define do
     sequence(:email) {|n| "user#{n}@tis.com" }
     company 'Horns&Hoofs'
     password '12345678'
+    password_confirmation '12345678'
     function 'a function'
+    phone '12345678'
+    adds 'address'
     www 'http://site.localhost'
+    active true
+    category_ids { create(:category).id }
   end
 end
