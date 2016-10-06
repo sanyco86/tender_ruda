@@ -27,27 +27,36 @@ gem 'sinatra', '>= 1.4.6', :require => nil
 gem 'axlsx', '2.0.1'
 gem 'axlsx_rails', '0.4.0'
 
+group :test, :development do
+  gem 'rspec-rails', '3.4.0'
+  gem 'factory_girl_rails', '4.5.0'
+  gem 'byebug', '8.2.1'
+  gem 'web-console', '2.2.1'
+  gem 'quiet_assets', '1.1.0'
+  gem 'faker', '1.6.1'
+end
+
 group :development, :test do
-  gem 'rspec-rails'
-  gem 'letter_opener'
+  gem 'spring', '1.6.1'
+  gem 'spring-commands-rspec', '1.0.4'
   gem 'capistrano', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
   gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq'
+  gem 'letter_opener'
 end
 
 group :test do
-  gem 'launchy'
+  gem 'shoulda-matchers'
   gem 'capybara'
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
+  gem 'launchy', '2.4.3'
+  gem 'fuubar', '2.0.0'
   gem 'simplecov', require: false
-  gem 'simplecov-rcov', require: false
-  gem 'brakeman', require: false
-  gem 'email_spec'
-  gem 'shoulda-matchers'
-  gem 'shoulda-callback-matchers'
+
+  # gem 'brakeman', require: false
+  # gem 'email_spec'
 end
 
 group :doc do

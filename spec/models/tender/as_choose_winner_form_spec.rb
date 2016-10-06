@@ -20,28 +20,8 @@
 #  etap             :integer          default(1)
 #
 
-FactoryGirl.define do
-  factory :tender do
-    manager
-    name 'Канцелярские товары для бухгалтерии'
-    status_id Tender::OPENED
-    uslovie 'Товары качественные'
-    dopuslovie 'Цены низкие'
-    data_start { Time.zone.now }
-    data_end { 1.day.from_now }
-    etap 1
-    category_ids { create(:category).id }
+require 'rails_helper'
 
-    trait :suspended do
-      status_id Tender::SUSPENDED
-    end
-
-    trait :finished do
-      status_id Tender::FINISHED
-    end
-
-    trait :archived do
-      status_id Tender::ARCHIVED
-    end
-  end
+describe Tender::AsChooseWinnerForm do
+  it { should accept_nested_attributes_for(:items) }
 end

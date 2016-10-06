@@ -13,8 +13,9 @@ require 'rails_helper'
 describe Category do
   it { should have_many(:tender_categories) }
   it { should have_many(:user_categories) }
-  it { should have_many(:tenders) }
-  it { should have_many(:users) }
+  it { should have_many(:tenders).through(:tender_categories) }
+  it { should have_many(:users).through(:user_categories) }
   it { should validate_uniqueness_of(:name) }
   it { should validate_presence_of(:name) }
+  it {expect(Category.all.to_sql).to eq Category.order(name: :asc).to_sql}
 end

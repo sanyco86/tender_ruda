@@ -59,14 +59,6 @@ class Tender < ActiveRecord::Base
     STATUS_MAP[status_id] || status_id
   end
 
-  def opened?
-    status == OPENED
-  end
-
-  def finished?
-    status == FINISHED
-  end
-
   def overdue?
     data_end < Time.zone.now
   end

@@ -37,7 +37,6 @@
 #
 
 class User < ActiveRecord::Base
-  belongs_to :category
   has_many :user_categories
   has_many :categories, through: :user_categories
   has_many :user_tenders, dependent: :destroy

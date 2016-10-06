@@ -15,11 +15,12 @@
 #  measure_unit :string           default("шт."), not null
 #
 
-FactoryGirl.define do
-  factory :item do
-    quantity 10
-    name 'Шариковые ручки'
-    gost 'ГОСТ 12/13'
-    description 'Синего цвета'
-  end
+require 'rails_helper'
+
+describe Item do
+  it { should have_many(:user_items).dependent(:destroy) }
+  it { should belong_to(:tender) }
+  it { should belong_to(:winner_user_item).class_name(UserItem).with_foreign_key(:winner_id) }
+  it { should validate_presence_of(:name) }
+  it { should delegate_method(:winner_user).to(:winner_user_item) }
 end

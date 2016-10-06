@@ -2,8 +2,10 @@ class Ability
   include CanCan::Ability
 
   def initialize(manager)
-    if manager
-      if manager.role == 'admin'
+    manager ||= Manager.new
+
+    case manager.role
+      when 'admin'
         can :manage, :all
         can :read, :all
         can :new, :all
@@ -11,18 +13,15 @@ class Ability
         can :edit, :all
         can :update, :all
         can :destroy, :all
-      end
-      if manager.role == 'write'
+      when 'write'
         can :read, :all
         can :new, :all
         can :create, :all
         can :edit, :all
         can :update, :all
         can :destroy, :all
-      end
-      if manager.role == 'read'
+      when 'read'
         can :read, :all
-      end
     end
   end
 end

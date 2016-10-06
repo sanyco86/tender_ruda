@@ -1,4 +1,4 @@
-lock '3.4.0'
+lock '3.6.1'
 
 set :application, :tender_ruda
 set :repo_url, 'git@bitbucket.org:lutsko86/tender_ruda.git'
