@@ -22,7 +22,7 @@
 
 FactoryGirl.define do
   factory :tender do
-    manager_id { create(:manager).id }
+    manager
     name 'Канцелярские товары для бухгалтерии'
     status_id Tender::OPENED
     uslovie 'Товары качественные'
